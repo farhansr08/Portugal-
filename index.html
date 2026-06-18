@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GK Quiz (5 Questions)</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
+}
+
+.quiz-box{
+    width:90%;
+    max-width:600px;
+    background:#111827;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 0 25px rgba(56,189,248,0.3);
+}
+
+h1{
+    color:#38bdf8;
+}
+
+#timer{
+    color:#facc15;
+    margin:10px;
+}
+
+#question{
+    font-size:20px;
+    margin:20px 0;
+}
+
+.option{
+    display:block;
+    width:100%;
+    margin:10px 0;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#1f2937;
+    color:white;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#38bdf8;
+    color:black;
+    transform:scale(1.03);
+}
+
+#score{
+    margin-top:15px;
+    color:#22c55e;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    background:#38bdf8;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+
+<h1>🧠 GK Quiz (5 Questions)</h1>
+
+<div id="timer">Time: 15s</div>
+<div id="question">Loading...</div>
+<div id="options"></div>
+
+<div id="score">Score: 0</div>
+
+<button onclick="restart()">Restart</button>
+
+</div>
+
+<script>
+
+/* FULL QUESTION BANK */
+const bank = [
+    {q:"Capital of India?", o:["Delhi","Mumbai","Kolkata","Chennai"], a:0},
+    {q:"Capital of France?", o:["Berlin","Paris","Rome","Madrid"], a:1},
+    {q:"Largest planet?", o:["Earth","Mars","Jupiter","Venus"], a:2},
+    {q:"HTML stands for?", o:["Hyper Text Markup Language","High Text Machine","None","Hyper Tool"], a:0},
+    {q:"Largest ocean?", o:["Atlantic","Indian","Pacific","Arctic"], a:2},
+    {q:"Who invented JavaScript?", o:["Brendan Eich","Bill Gates","Tesla","Einstein"], a:0},
+    {q:"National animal of India?", o:["Lion","Tiger","Elephant","Horse"], a:1},
+    {q:"Sun rises in?", o:["North","South","East","West"], a:2},
+    {q:"Fastest land animal?", o:["Lion","Cheetah","Tiger","Horse"], a:1},
+    {q:"Water formula?", o:["CO2","H2O","O2","NaCl"], a:1},
+    {q:"Currency of India?", o:["Dollar","Rupee","Yen","Euro"], a:1},
+    {q:"Which planet is Red?", o:["Earth","Mars","Venus","Mercury"], a:1}
+];
+
+let questions = [];
+let index = 0;
+let score = 0;
+let time = 15;
+let timer;
+
+/* SHUFFLE ARRAY */
+function shuffle(arr){
+    return arr.sort(()=>Math.random()-0.5);
+}
+
+/* PICK 5 UNIQUE QUESTIONS */
+function startGame(){
+    questions = shuffle([...bank]).slice(0,5);
+    index = 0;
+    score = 0;
+    loadQuestion();
+}
+
+/* LOAD QUESTION */
+function loadQuestion(){
+
+    clearInterval(timer);
+    time = 15;
+
+    if(index >= questions.length){
+        document.getElementById("question").innerText =
+        "🎉 Game Over! Score: " + score + "/5";
+        document.getElementById("options").innerHTML = "";
+        return;
+    }
+
+    let q = questions[index];
+
+    document.getElementById("question").innerText = q.q;
+
+    let box = document.getElementById("options");
+    box.innerHTML = "";
+
+    q.o.forEach((opt,i)=>{
+
+        let btn = document.createElement("button");
+        btn.className = "option";
+        btn.innerText = opt;
+
+        btn.onclick = ()=>check(i);
+
+        box.appendChild(btn);
+    });
+
+    document.getElementById("score").innerText = "Score: " + score;
+
+    startTimer();
+}
+
+/* CHECK ANSWER */
+function check(i){
+
+    if(i === questions[index].a){
+        score++;
+    }
+
+    index++;
+    loadQuestion();
+}
+
+/* TIMER */
+function startTimer(){
+
+    document.getElementById("timer").innerText = "Time: 15s";
+
+    timer = setInterval(()=>{
+
+        time--;
+        document.getElementById("timer").innerText = "Time: " + time + "s";
+
+        if(time <= 0){
+            index++;
+            loadQuestion();
+        }
+
+    },1000);
+}
+
+/* RESTART */
+function restart(){
+    startGame();
+}
+
+/* START */
+startGame();
+
+</script>
+
+</body>
+</html>
